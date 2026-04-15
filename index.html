@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Costco $700 Gift Card Reward</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f2f2f2;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px 60px;
+    }
+
+    /* ── LOGO ── */
+    .brand-logo {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+    .brand-logo-img {
+      display: inline-block;
+      max-width: 320px;
+      width: min(320px, 85vw);
+      height: auto;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 28px rgba(0,0,0,0.10);
+      max-width: 420px;
+      width: 100%;
+      padding: 34px 30px;
+      text-align: center;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-wrap {
+      max-width: 420px;
+      width: 100%;
+      margin-bottom: 6px;
+      display: none;
+    }
+    .progress-wrap.visible { display: block; }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: #888;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 5px;
+      background: #ddd;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #005DAA, #E31837);
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── INTRO ── */
+    .card-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #1a1a1a;
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+    .card-title .highlight { color: #E31837; }
+    .card-sub {
+      font-size: 0.875rem;
+      color: #777;
+      margin-bottom: 26px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+    .btn-primary {
+      display: block;
+      width: 100%;
+      background: linear-gradient(135deg, #005DAA 0%, #E31837 100%);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 50px;
+      padding: 16px;
+      cursor: pointer;
+      margin-bottom: 14px;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .card-footnote {
+      font-size: 0.7rem;
+      color: #bbb;
+      font-weight: 500;
+    }
+
+    /* ── QUESTIONS ── */
+    .question-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #1a1a1a;
+      margin-bottom: 22px;
+      line-height: 1.35;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+    .option-btn {
+      width: 100%;
+      background: #fff;
+      border: 1.5px solid #ddd;
+      border-radius: 50px;
+      padding: 14px 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.18s ease;
+    }
+    .option-btn:hover {
+      background: linear-gradient(135deg, #005DAA 0%, #E31837 100%);
+      color: #fff;
+      border-color: transparent;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    }
+    .option-btn.selected {
+      background: linear-gradient(135deg, #005DAA 0%, #E31837 100%);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    /* ── LOADING ── */
+    .loading-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #1a1a1a;
+      margin-bottom: 22px;
+    }
+    .loading-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .loading-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #005DAA, #E31837);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .loading-status {
+      font-size: 0.78rem;
+      color: #aaa;
+      font-weight: 500;
+    }
+
+    /* ── APPROVED ── */
+    .approved-title {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+    }
+    .approved-sub {
+      font-size: 0.95rem;
+      color: #333;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .approved-sub strong { color: #005DAA; }
+    .limited-warning {
+      font-size: 0.82rem;
+      color: #E31837;
+      font-weight: 700;
+      margin-bottom: 22px;
+    }
+    .btn-claim {
+      display: block;
+      width: 100%;
+      background: linear-gradient(135deg, #005DAA 0%, #E31837 100%);
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      border: none;
+      border-radius: 50px;
+      padding: 17px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      transition: opacity 0.2s;
+    }
+    .btn-claim:hover { opacity: 0.88; }
+
+    /* ── SCREEN VISIBILITY ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- LOGO -->
+  <div class="brand-logo">
+    <img class="brand-logo-img" src="assets/costco-logo.png" alt="Costco Wholesale" />
+  </div>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-wrap" id="progress-wrap">
+    <div class="progress-meta">
+      <span id="step-label">Step 1 of 4</span>
+      <span id="step-pct">25%</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progress-fill" style="width:25%"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 0: INTRO -->
+  <div class="screen active" id="screen-intro">
+    <div class="card">
+      <h1 class="card-title">Congratulations! You've Been Selected for <span class="highlight">Costco's $700 Gift Card Reward</span> 🛒</h1>
+      <p class="card-sub">Answer 4 quick questions to confirm your eligibility and unlock your exclusive reward.</p>
+      <button class="btn-primary" onclick="goTo(1)">Start Now</button>
+      <p class="card-footnote">Takes less than 30 seconds &bull; No personal information required</p>
+    </div>
+  </div>
+
+  <!-- SCREEN 1: Q1 -->
+  <div class="screen" id="screen-1">
+    <div class="card">
+      <h2 class="question-title">How often do you visit Costco?</h2>
+      <div class="options">
+        <button class="option-btn" onclick="selectAndNext(this, 2)">Daily</button>
+        <button class="option-btn" onclick="selectAndNext(this, 2)">A few times a week</button>
+        <button class="option-btn" onclick="selectAndNext(this, 2)">A few times a month</button>
+        <button class="option-btn" onclick="selectAndNext(this, 2)">This is my first time</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Q2 -->
+  <div class="screen" id="screen-2">
+    <div class="card">
+      <h2 class="question-title">What do you buy from Costco?</h2>
+      <div class="options">
+        <button class="option-btn" onclick="selectAndNext(this, 3)">Fragrances</button>
+        <button class="option-btn" onclick="selectAndNext(this, 3)">Groceries</button>
+        <button class="option-btn" onclick="selectAndNext(this, 3)">Electronics</button>
+        <button class="option-btn" onclick="selectAndNext(this, 3)">Other</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: Q3 -->
+  <div class="screen" id="screen-3">
+    <div class="card">
+      <h2 class="question-title">How do you usually buy from Costco?</h2>
+      <div class="options">
+        <button class="option-btn" onclick="selectAndNext(this, 4)">In-store</button>
+        <button class="option-btn" onclick="selectAndNext(this, 4)">Drive-thru</button>
+        <button class="option-btn" onclick="selectAndNext(this, 4)">Mobile App</button>
+        <button class="option-btn" onclick="selectAndNext(this, 4)">Delivery</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: Q4 -->
+  <div class="screen" id="screen-4">
+    <div class="card">
+      <h2 class="question-title">Would you like to receive future exclusive Costco promotions?</h2>
+      <div class="options">
+        <button class="option-btn" onclick="selectAndNext(this, 'loading')">Yes, absolutely!</button>
+        <button class="option-btn" onclick="selectAndNext(this, 'loading')">Maybe</button>
+        <button class="option-btn" onclick="selectAndNext(this, 'loading')">No thanks</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN LOADING -->
+  <div class="screen" id="screen-loading">
+    <div class="card">
+      <h2 class="loading-title">Checking Availability...</h2>
+      <div class="loading-bar-bg">
+        <div class="loading-bar-fill" id="loading-fill"></div>
+      </div>
+      <p class="loading-status" id="loading-status">Checking reward inventory...</p>
+    </div>
+  </div>
+
+  <!-- SCREEN APPROVED -->
+  <div class="screen" id="screen-approved">
+    <div class="card">
+      <h2 class="approved-title">You're Approved! 🎉</h2>
+      <p class="approved-sub">You qualify for a <strong>$700 Costco Gift Card.</strong></p>
+      <p class="limited-warning">⚠️ Limited rewards remaining in your area.</p>
+      <a href="#" class="btn-claim">Claim My $700 Gift Card</a>
+      <p class="card-footnote">No credit card required</p>
+    </div>
+  </div>
+
+  <script>
+    const steps = {
+      1: { label: 'Step 1 of 4', pct: 25 },
+      2: { label: 'Step 2 of 4', pct: 50 },
+      3: { label: 'Step 3 of 4', pct: 75 },
+      4: { label: 'Step 4 of 4', pct: 100 },
+    };
+
+    function hideAll() {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    }
+
+    function goTo(step) {
+      hideAll();
+      const progressWrap = document.getElementById('progress-wrap');
+
+      if (step === 'loading') {
+        progressWrap.classList.remove('visible');
+        document.getElementById('screen-loading').classList.add('active');
+        runLoading();
+        return;
+      }
+      if (step === 'approved') {
+        progressWrap.classList.remove('visible');
+        document.getElementById('screen-approved').classList.add('active');
+        return;
+      }
+      if (step === 0) {
+        progressWrap.classList.remove('visible');
+        document.getElementById('screen-intro').classList.add('active');
+        return;
+      }
+
+      progressWrap.classList.add('visible');
+      const info = steps[step];
+      document.getElementById('step-label').textContent = info.label;
+      document.getElementById('step-pct').textContent = info.pct + '%';
+      document.getElementById('progress-fill').style.width = info.pct + '%';
+      document.getElementById('screen-' + step).classList.add('active');
+    }
+
+    function selectAndNext(btn, nextStep) {
+      btn.classList.add('selected');
+      setTimeout(() => goTo(nextStep), 320);
+    }
+
+    function runLoading() {
+      const fill = document.getElementById('loading-fill');
+      const status = document.getElementById('loading-status');
+      const messages = [
+        'Checking reward inventory...',
+        'Verifying your responses...',
+        'Confirming availability...',
+        'Almost done...'
+      ];
+      let i = 0;
+      const interval = setInterval(() => {
+        i++;
+        if (i < messages.length) status.textContent = messages[i];
+      }, 700);
+
+      let w = 0;
+      const barInterval = setInterval(() => {
+        w += Math.random() * 8 + 3;
+        if (w > 92) w = 92;
+        fill.style.width = w + '%';
+        if (w >= 92) clearInterval(barInterval);
+      }, 180);
+
+      setTimeout(() => {
+        clearInterval(interval);
+        clearInterval(barInterval);
+        fill.style.width = '100%';
+        setTimeout(() => goTo('approved'), 400);
+      }, 3200);
+    }
+  </script>
+</body>
+</html>
